@@ -50,6 +50,15 @@
 * JDK 11 o superior instalado.
 
 ### Compilación (Consola / Terminal)
+
+CAPTURAS DE PANTALLA
+<img width="1902" height="1018" alt="image" src="https://github.com/user-attachments/assets/91c133c6-01eb-4536-8f25-5ec37b668fd2" />
+<img width="1917" height="1032" alt="image" src="https://github.com/user-attachments/assets/435eec5f-5372-4e62-89fb-9662131e9266" />
+<img width="1917" height="1015" alt="image" src="https://github.com/user-attachments/assets/4d2facbc-bcc6-4d43-b7f7-b174baf5c31e" />
+<img width="1917" height="1021" alt="image" src="https://github.com/user-attachments/assets/2d472652-b8d1-4daf-ad9c-45455b268330" />
+<img width="1917" height="1020" alt="image" src="https://github.com/user-attachments/assets/f5661af7-89d4-499b-adef-28b3b4c00a18" />
+<img width="1911" height="1026" alt="image" src="https://github.com/user-attachments/assets/e09cfc15-69da-4b2e-a8f6-4119967e3a74" />
+
 Desde la raíz del proyecto:
 ```bash
 javac -d bin src/ej1_chat_tcp/*.java src/ej2_telemetria_udp/*.java
