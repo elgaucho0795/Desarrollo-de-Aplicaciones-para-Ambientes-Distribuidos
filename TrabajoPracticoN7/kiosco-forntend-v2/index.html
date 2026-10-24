@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Kiosco - Productos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans flex flex-col antialiased">
+
+    <!-- Header / Navbar -->
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-30 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-brand-600 text-white p-2 rounded-lg">
+                    <i class="fa-solid font-bold fa-store text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-white leading-none">Sistema Kiosco</h1>
+                    <span class="text-xs text-slate-400">Panel de Administración de Productos</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-2">
+                <button onclick="abrirModalCrear()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition flex items-center space-x-2 shadow-md">
+                    <i class="fa-solid fa-plus"></i>
+                    <span class="hidden sm:inline">Nuevo Producto</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+
+        <!-- Toolbar Section -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 bg-slate-800/80 p-4 rounded-xl border border-slate-700 shadow-md">
+            
+            <!-- Direct ID Search -->
+            <div class="md:col-span-5 flex items-center space-x-2">
+                <div class="relative w-full">
+                    <i class="fa-solid fa-hashtag absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="number" id="idSearchInput" placeholder="Buscar por ID específico..." 
+                        class="w-full pl-9 pr-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent">
+                </div>
+                <button onclick="buscarPorId()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center space-x-1">
+                    <i class="fa-solid fa-search"></i>
+                    <span>Buscar</span>
+                </button>
+            </div>
+
+            <!-- Filter Table Local -->
+            <div class="md:col-span-5 relative">
+                <i class="fa-solid fa-filter absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="filterInput" onkeyup="filtrarTabla()" placeholder="Filtrar por nombre o código en la lista..." 
+                    class="w-full pl-9 pr-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent">
+            </div>
+
+            <!-- Reload Button -->
+            <div class="md:col-span-2 flex justify-end">
+                <button onclick="cargarProductos()" class="w-full md:w-auto bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-rotate text-xs"></i>
+                    <span>Refrescar</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Data Table Card -->
+        <div class="bg-slate-800 rounded-xl border border-slate-700 shadow-xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="bg-slate-900/60 uppercase text-xs text-slate-400 border-b border-slate-700">
+                        <tr>
+                            <th scope="col" class="px-6 py-4 font-semibold">ID</th>
+                            <th scope="col" class="px-6 py-4 font-semibold">Nombre</th>
+                            <th scope="col" class="px-6 py-4 font-semibold">Código</th>
+                            <th scope="col" class="px-6 py-4 font-semibold">Detalle</th>
+                            <th scope="col" class="px-6 py-4 font-semibold text-right">Precio Compra</th>
+                            <th scope="col" class="px-6 py-4 font-semibold text-right">Precio Venta</th>
+                            <th scope="col" class="px-6 py-4 font-semibold text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaProductos" class="divide-y divide-slate-700/50">
+                        <!-- Carga dinámica -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden py-12 text-center text-slate-500">
+                <i class="fa-solid fa-box-open text-4xl mb-3 text-slate-600"></i>
+                <p class="text-base font-medium">No se encontraron productos</p>
+                <p class="text-xs text-slate-600 mt-1">Intenta refrescar la lista o agregar un nuevo registro.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Modal Form (Crear / Editar) -->
+    <div id="modalProducto" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 rounded-xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all">
+            <div class="px-6 py-4 border-b border-slate-700 flex justify-between items-center bg-slate-900/40">
+                <h3 id="modalTitle" class="text-lg font-bold text-white">Nuevo Producto</h3>
+                <button onclick="cerrarModal()" class="text-slate-400 hover:text-white transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <form id="formProducto" onsubmit="guardarProducto(event)" class="p-6 space-y-4">
+                <input type="hidden" id="prodId">
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Nombre</label>
+                    <input type="text" id="prodNombre" required placeholder="Ej: Coca Cola 500ml"
+                        class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Código de Barras</label>
+                        <input type="text" id="prodCodigo" required placeholder="Ej: 7795513181324"
+                            class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Detalle / Categoría</label>
+                        <input type="text" id="prodDetalle" placeholder="Ej: Gaseosa de 500ml"
+                            class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Precio Compra ($)</label>
+                        <input type="text" id="prodPrecioCompra" required placeholder="3000.00"
+                            class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Precio Venta ($)</label>
+                        <input type="text" id="prodPrecioVenta" required placeholder="3500.00"
+                            class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-700 flex justify-end space-x-3">
+                    <button type="button" onclick="cerrarModal()" 
+                        class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-sm font-medium transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" 
+                        class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-sm font-medium transition shadow-md">
+                        Guardar Producto
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 flex items-center space-x-3 px-4 py-3 rounded-lg shadow-xl text-sm font-medium"></div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/productos';
+        let productosCache = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            cargarProductos();
+        });
+
+        // Cargar todos los productos (GET)
+        async function cargarProductos() {
+            try {
+                const res = await fetch(API_URL);
+                if (!res.ok) throw new Error('Error al conectar con el backend');
+                productosCache = await res.json();
+                renderizarTabla(productosCache);
+            } catch (err) {
+                mostrarToast('No se pudo conectar con el servidor (http://localhost:8080)', 'error');
+                renderizarTabla([]);
+            }
+        }
+
+        // Renderizar filas de la tabla
+        function renderizarTabla(lista) {
+            const tbody = document.getElementById('tablaProductos');
+            const emptyState = document.getElementById('emptyState');
+
+            if (!lista || lista.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            tbody.innerHTML = lista.map(p => `
+                <tr class="hover:bg-slate-750 transition border-b border-slate-700/50">
+                    <td class="px-6 py-4 font-mono font-bold text-brand-500">#${p.id}</td>
+                    <td class="px-6 py-4 font-medium text-slate-100">${p.nombre || ''}</td>
+                    <td class="px-6 py-4 font-mono text-xs text-slate-400">${p.codigo || '-'}</td>
+                    <td class="px-6 py-4 text-slate-400">${p.detalle || '-'}</td>
+                    <td class="px-6 py-4 text-right font-mono text-slate-300">$${p.precio_compra || '0.00'}</td>
+                    <td class="px-6 py-4 text-right font-mono font-semibold text-emerald-400">$${p.precio_venta || '0.00'}</td>
+                    <td class="px-6 py-4 text-center">
+                        <div class="flex items-center justify-center space-x-2">
+                            <button onclick='abrirModalEditar(${JSON.stringify(p)})' title="Editar" class="p-1.5 bg-slate-700 hover:bg-brand-600 text-slate-300 hover:text-white rounded-lg transition">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="eliminarProducto(${p.id})" title="Eliminar" class="p-1.5 bg-slate-700 hover:bg-rose-600 text-slate-300 hover:text-white rounded-lg transition">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Buscar producto por ID directo (GET /{id})
+        async function buscarPorId() {
+            const idInput = document.getElementById('idSearchInput').value.trim();
+            if (!idInput) {
+                cargarProductos();
+                return;
+            }
+
+            try {
+                const res = await fetch(`${API_URL}/${idInput}`);
+                if (res.status === 404 || res.status === 400 || !res.ok) {
+                    mostrarToast(`Producto con ID #${idInput} no encontrado`, 'error');
+                    renderizarTabla([]);
+                    return;
+                }
+                const producto = await res.json();
+                renderizarTabla([producto]);
+                mostrarToast(`Producto #${idInput} cargado`, 'success');
+            } catch (err) {
+                mostrarToast('Error al buscar el producto', 'error');
+            }
+        }
+
+        // Filtrar tabla localmente por nombre o código
+        function filtrarTabla() {
+            const query = document.getElementById('filterInput').value.toLowerCase();
+            const filtrados = productosCache.filter(p => 
+                (p.nombre && p.nombre.toLowerCase().includes(query)) ||
+                (p.codigo && p.codigo.toLowerCase().includes(query))
+            );
+            renderizarTabla(filtrados);
+        }
+
+        // Guardar o Actualizar (POST)
+        async function guardarProducto(e) {
+            e.preventDefault();
+
+            const id = document.getElementById('prodId').value;
+            
+            // Construir el objeto base sin la propiedad id
+            const productoPayload = {
+                nombre: document.getElementById('prodNombre').value,
+                detalle: document.getElementById('prodDetalle').value,
+                codigo: document.getElementById('prodCodigo').value,
+                precio_compra: document.getElementById('prodPrecioCompra').value,
+                precio_venta: document.getElementById('prodPrecioVenta').value
+            };
+
+            // SOLO adjuntar el id si estamos editando un producto existente
+            if (id && id.trim() !== '') {
+                productoPayload.id = parseInt(id, 10);
+            }
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(productoPayload)
+                });
+
+                if (!res.ok) throw new Error('Error al guardar');
+
+                cerrarModal();
+                mostrarToast(id ? 'Producto actualizado con éxito' : 'Producto creado con éxito', 'success');
+                cargarProductos();
+            } catch (err) {
+                mostrarToast('Ocurrió un error al guardar el producto', 'error');
+            }
+        }
+
+        // Eliminar producto (DELETE /{id})
+        async function eliminarProducto(id) {
+            if (!confirm(`¿Estás seguro de que deseas eliminar el producto #${id}?`)) return;
+
+            try {
+                const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error('Error al eliminar');
+
+                mostrarToast('Producto eliminado correctamente', 'success');
+                cargarProductos();
+            } catch (err) {
+                mostrarToast('No se pudo eliminar el producto', 'error');
+            }
+        }
+
+        // Abrir modal crear
+        function abrirModalCrear() {
+            document.getElementById('modalTitle').innerText = 'Nuevo Producto';
+            document.getElementById('formProducto').reset();
+            document.getElementById('prodId').value = '';
+            document.getElementById('modalProducto').classList.remove('hidden');
+        }
+
+        // Abrir modal editar
+        function abrirModalEditar(p) {
+            document.getElementById('modalTitle').innerText = `Editar Producto #${p.id}`;
+            document.getElementById('prodId').value = p.id;
+            document.getElementById('prodNombre').value = p.nombre || '';
+            document.getElementById('prodDetalle').value = p.detalle || '';
+            document.getElementById('prodCodigo').value = p.codigo || '';
+            document.getElementById('prodPrecioCompra').value = p.precio_compra || '';
+            document.getElementById('prodPrecioVenta').value = p.precio_venta || '';
+            document.getElementById('modalProducto').classList.remove('hidden');
+        }
+
+        // Cerrar modal
+        function cerrarModal() {
+            document.getElementById('modalProducto').classList.add('hidden');
+        }
+
+        // Toast de notificación UI
+        function mostrarToast(msj, tipo = 'success') {
+            const toast = document.getElementById('toast');
+            toast.innerText = msj;
+            toast.className = `fixed bottom-5 right-5 z-50 transform transition-all duration-300 flex items-center space-x-3 px-4 py-3 rounded-lg shadow-xl text-sm font-medium ${
+                tipo === 'success' ? 'bg-emerald-600 text-white' : 'bg-rose-600 text-white'
+            }`;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
