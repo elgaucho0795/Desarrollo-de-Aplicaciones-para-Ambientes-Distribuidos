@@ -1,0 +1,1 @@
+insert into productos (nombre, detalle, codigo, precio_compra, precio_venta) values ('coca cola','gaseosa de 500ml','7795513181324','3000.00','3500.00');
