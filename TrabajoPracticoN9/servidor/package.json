@@ -1,0 +1,13 @@
+{
+  "name": "servidor-seguridad-tp9",
+  "version": "1.0.0",
+  "description": "Servidor HTTPS con JWT y control de acceso para TP9",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
