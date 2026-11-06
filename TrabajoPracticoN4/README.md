@@ -31,3 +31,6 @@ Se realizaron pruebas transmitiendo una ráfaga de **1000 transacciones** consec
 ## 3. Evidencias de Funcionamiento
 
 A continuación se adjuntan las capturas de pantalla de la ejecución del Servidor y Cliente TCP:
+![Ejecución del servidor](./img/captura_ejecucion.png)
+
+![Resultados del cliente](./img/captura_ejecucion_2.png)
