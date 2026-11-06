@@ -45,3 +45,11 @@ Manejo explícito de Timeouts: Establecer tiempos máximos de espera en las peti
 2. Compilar todos los archivos `.java`:
    ```bash
    javac *.java
+   ```
+
+## Capturas de pantalla
+
+- [Captura 1](captura_tp6.png)
+- [Captura 2](captura_tp6_1.png)
+- [Captura 3](captura_tp6._2.png)
+- [Captura 4](captura_tp6_3.png)
