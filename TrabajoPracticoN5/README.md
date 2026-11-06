@@ -19,3 +19,10 @@ Este proyecto implementa el **Modelo de Actores** para resolver problemas de con
 [ ActorSensor 3 ] --(Send: MensajeLectura)----> [ Mailbox FIFO ] ---> [ ActorProcesador ]
 [ ActorSensor 4 ] --(Send: MensajeLectura)-->  /                       (State Change)
 [ ActorSensor 5 ] --(Send: MensajeLectura)--> /
+```
+
+## 3. Capturas
+
+![Captura del trabajo práctico](./captura_tp5.png)
+
+![Captura adicional del trabajo práctico](./captura_tp5_1.png)
